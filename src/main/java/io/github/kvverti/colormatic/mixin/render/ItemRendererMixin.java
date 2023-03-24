@@ -24,8 +24,10 @@ package io.github.kvverti.colormatic.mixin.render;
 import io.github.kvverti.colormatic.Colormatic;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,15 +41,12 @@ import org.spongepowered.asm.mixin.injection.Slice;
  */
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
-
-    @Shadow private void renderGuiQuad(BufferBuilder builder, int x, int y, int w, int h, int r, int g, int b, int a) {}
-
     @Redirect(
-        method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+        method = "renderGuiItemOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
-            ordinal = 1
+            target = "Lnet/minecraft/client/gui/DrawableHelper;fill(Lnet/minecraft/client/util/math/MatrixStack;IIIII)V",
+                ordinal = 1
         ),
         slice = @Slice(
             from = @At(
@@ -56,17 +55,13 @@ public abstract class ItemRendererMixin {
             )
         )
     )
-    private void proxyRenderGuiQuad(ItemRenderer self, BufferBuilder buffer, int x, int y, int w, int h, int r, int g, int b, int a,
-            TextRenderer whoCares0, ItemStack stack, int whoCares1, int whoCares2, String whoCares3) {
+    private void proxyRenderGuiQuad(MatrixStack matrices, int x1, int y1, int x2, int y2, int color, MatrixStack matrices2, TextRenderer textRenderer, ItemStack stack) {
         if(Colormatic.DURABILITY_COLORS.hasCustomColormap()) {
             float damage = stack.getDamage();
             float maxDamage = stack.getMaxDamage();
             float durability = Math.max(0.0f, (maxDamage - damage) / maxDamage);
-            int color = Colormatic.DURABILITY_COLORS.getColorFraction(durability);
-            r = (color >> 16) & 0xff;
-            g = (color >>  8) & 0xff;
-            b = (color >>  0) & 0xff;
+            color = Colormatic.DURABILITY_COLORS.getColorFraction(durability);
         }
-        this.renderGuiQuad(buffer, x, y, w, h, r, g, b, a);
+        DrawableHelper.fill(matrices, x1, y1, x2, y2, color);
     }
 }

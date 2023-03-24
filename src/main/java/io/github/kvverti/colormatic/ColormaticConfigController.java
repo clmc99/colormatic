@@ -51,7 +51,7 @@ public final class ColormaticConfigController {
     }
 
     public static Screen getConfigScreen(ColormaticConfig config, Screen parent) {
-        return new ColormaticConfigScreen(Text.translatable("colormatic.config.title.subtitle"), parent, config);
+        return null;
     }
 
     private static final String CLEAR_SKY = "fog.clearSky";

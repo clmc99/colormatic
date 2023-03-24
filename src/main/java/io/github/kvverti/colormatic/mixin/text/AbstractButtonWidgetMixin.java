@@ -36,15 +36,4 @@ public abstract class AbstractButtonWidgetMixin extends DrawableHelper {
 
     @Shadow public abstract boolean isHovered();
 
-    @ModifyConstant(method = "renderButton", constant = @Constant(intValue = 16777215))
-    private int proxyButtonHoverColor(int original) {
-        int col = Colormatic.COLOR_PROPS.getProperties().getButtonTextHovered();
-        return col != 0 && this.isHovered() ? col : original;
-    }
-
-    @ModifyConstant(method = "renderButton", constant = @Constant(intValue = 10526880))
-    private int proxyButtonDisabledColor(int original) {
-        int col = Colormatic.COLOR_PROPS.getProperties().getButtonTextDisabled();
-        return col != 0 ? col : original;
-    }
 }

@@ -28,13 +28,16 @@ import io.github.kvverti.colormatic.properties.ColormapProperties;
 import io.github.kvverti.colormatic.properties.ColormapProperties.ColumnBounds;
 import io.github.kvverti.colormatic.properties.HexColor;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -44,7 +47,7 @@ public class BiomeColormap implements ColormaticResolver {
 
     private final ColormapProperties properties;
     private final NativeImage colormap;
-    private transient final int defaultColor;
+    private transient int defaultColor;
     private transient final ExtendedColorResolver resolver;
 
     public BiomeColormap(ColormapProperties props, NativeImage image) {
@@ -54,18 +57,18 @@ public class BiomeColormap implements ColormaticResolver {
         if(col != null) {
             defaultColor = col.rgb();
         } else {
-            defaultColor = computeDefaultColor(props);
+            defaultColor = -1;
         }
         this.resolver = new ExtendedColorResolver(this);
     }
 
-    private int computeDefaultColor(ColormapProperties props) {
+    private int computeDefaultColor(BlockRenderView world, ColormapProperties props) {
         switch(props.getFormat()) {
             case VANILLA:
                 return colormap.getColor(128, 128);
             case GRID:
                 try {
-                    int x = props.getColumn(BiomeKeys.PLAINS, BuiltinRegistries.BIOME).column;
+                    int x = props.getColumn(BiomeKeys.PLAINS, MinecraftClient.getInstance().world.getRegistryManager().get(RegistryKeys.BIOME)).column;
                     int y = MathHelper.clamp(63 - props.getOffset(), 0, colormap.getHeight() - 1);
                     return colormap.getColor(x, y);
                 } catch(IllegalArgumentException e) {
@@ -104,10 +107,11 @@ public class BiomeColormap implements ColormaticResolver {
             case VANILLA:
                 double temp = biome.getTemperature();
                 temp = MathHelper.clamp(temp, 0.0f, 1.0f);
-                double rain = MathHelper.clamp(biome.getDownfall(), 0.0F, 1.0F);
+                // TODO IMS DO REAL THING
+                double rain = MathHelper.clamp(0.5f, 0.0F, 1.0F);
                 return getColor(temp, rain);
             case GRID:
-                ColumnBounds cb = properties.getColumn(Colormatic.getBiomeKey(manager, biome), manager.get(Registry.BIOME_KEY));
+                ColumnBounds cb = properties.getColumn(Colormatic.getBiomeKey(manager, biome), manager.get(RegistryKeys.BIOME));
                 // mojang uses this still so I don't know why they marked it for removal
                 @SuppressWarnings("removal")
                 double frac = Biome.FOLIAGE_NOISE.sample(posX * 0.0225, posZ * 0.0225, false);
@@ -141,6 +145,10 @@ public class BiomeColormap implements ColormaticResolver {
     public static int getBiomeColor(BlockRenderView world, BlockPos pos, BiomeColormap colormap) {
         if(world == null || pos == null) {
             return colormap.getDefaultColor();
+        }
+
+        if (colormap.defaultColor == -1) {
+            colormap.defaultColor = colormap.computeDefaultColor(world, colormap.properties);
         }
         return colormap.resolver.resolveExtendedColor(world, pos);
     }

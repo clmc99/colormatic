@@ -32,6 +32,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 
+import static io.github.kvverti.colormatic.properties.DefaultColumns.currentColumns;
+
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 
@@ -42,6 +44,8 @@ public abstract class MinecraftClientMixin {
     private void propagateDynamicRegistry(@Nullable ClientWorld world, CallbackInfo info) {
         var manager = world == null ? null : world.getRegistryManager();
         ExtendedColorResolver.setRegistryManager(manager);
+        currentColumns = DefaultColumns.createCurrentColumnBounds(world);
+
         DefaultColumns.reloadDefaultColumnBounds(manager);
     }
 }

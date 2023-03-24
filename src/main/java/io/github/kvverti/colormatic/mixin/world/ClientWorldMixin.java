@@ -24,7 +24,15 @@ package io.github.kvverti.colormatic.mixin.world;
 import io.github.kvverti.colormatic.Colormatic;
 import io.github.kvverti.colormatic.colormap.BiomeColormaps;
 import io.github.kvverti.colormatic.colormap.ExtendedColorResolver;
+import io.github.kvverti.colormatic.properties.DefaultColumns;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.profiler.Profiler;
+import net.minecraft.world.MutableWorldProperties;
+import net.minecraft.world.biome.ColorResolver;
+import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,11 +47,14 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.CubicSampler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeCoords;
-import net.minecraft.world.level.ColorResolver;
+
+import java.util.function.Supplier;
+
+import static io.github.kvverti.colormatic.properties.DefaultColumns.currentColumns;
 
 /**
  * Provides global sky color customization capability.
@@ -55,16 +66,12 @@ public abstract class ClientWorldMixin extends World {
     @Final
     private Object2ObjectArrayMap<ColorResolver, BiomeColorCache> colorCache;
 
-    @Shadow
-    public abstract int calculateColor(BlockPos pos, ColorResolver colorResolver);
-
-    @Shadow
-    public abstract DynamicRegistryManager getRegistryManager();
-
-    private ClientWorldMixin() {
-        super(null, null, null, null, false, false, 0L, 0);
+    protected ClientWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
+        super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess, maxChainedNeighborUpdates);
     }
 
+    @Shadow
+    public abstract int calculateColor(BlockPos pos, ColorResolver colorResolver);
     @ModifyArg(
         method = "getSkyColor",
         at = @At(
@@ -79,7 +86,7 @@ public abstract class ClientWorldMixin extends World {
         var biomeAccess = this.getBiomeAccess();
         var manager = this.getRegistryManager();
         return (x, y, z) -> {
-            var biomeRegistry = manager.get(Registry.BIOME_KEY);
+            var biomeRegistry = manager.get(RegistryKeys.BIOME);
             var biome = Colormatic.getRegistryValue(biomeRegistry, biomeAccess.getBiomeForNoiseGen(x, y, z));
             return Vec3d.unpackRgb(resolver.getColor(manager, biome, BiomeCoords.toBlock(x), BiomeCoords.toBlock(y), BiomeCoords.toBlock(z)));
         };

@@ -32,6 +32,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
@@ -166,7 +167,7 @@ public abstract class LightmapTextureManagerMixin {
         // Note: the overworld ambience ranges between 0.2 and 1.0
         // depending on the time of day. The nether ambience is always
         // 0.2, and the end ambience is always 1.0.
-        float ambience = (world.getStarBrightness(partialTicks) - 0.2f) * 1.25f;
+        float ambience = (world.getSkyBrightness(partialTicks) - 0.2f) * 1.25f;
         // relative intensity curve = exp2(ax)
         relativeIntensityExpScale = ambience * ColormaticConfig.scaled(Colormatic.config().relativeBlockLightIntensityExponent) / 16.0;
         // set this to -1.0 to signal a lightning strike. Relative intensity still follows the normal ambience.
@@ -238,36 +239,16 @@ public abstract class LightmapTextureManagerMixin {
      * Step the ambience into discrete intervals if sky light blending
      * is disabled. Only necessary for the vanilla lightmap.
      */
-    @ModifyVariable(
+    @Redirect(
         method = "update",
-        at = @At(value = "STORE", ordinal = 0), // World#getAmbientLight
-        ordinal = 1
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;getSkyBrightness(F)F")
     )
-    private float modifySkyAmbience(float ambience) {
+    private float modifySkyAmbience(ClientWorld instance, float tickDelta) {
+        float ambience = instance.getSkyBrightness(tickDelta);
         if(!Colormatic.config().blendSkyLight) {
             ambience = (int)(ambience * 16) / 16.0f;
         }
         return ambience;
     }
 
-    /**
-     * Scale the vanilla block light intensity by the relative intensity.
-     */
-    @ModifyVariable(
-        method = "update",
-        at = @At(
-            value = "STORE",
-            ordinal = 0
-        ),
-        index = 16
-    )
-    private float modifyFlickerIntensity(float blockLight) {
-        int sky = lightIndex >>> 4;
-        int block = lightIndex & 0b1111;
-        lightIndex = (lightIndex + 1) & 0xff;
-        if(block != 15) {
-            return blockLight * (float)Math.exp(relativeIntensityExpScale * sky);
-        }
-        return blockLight;
-    }
 }

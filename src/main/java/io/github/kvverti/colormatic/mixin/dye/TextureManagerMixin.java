@@ -23,6 +23,7 @@ package io.github.kvverti.colormatic.mixin.dye;
 
 import io.github.kvverti.colormatic.Colormatic;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import net.minecraft.client.texture.TextureManager;
@@ -41,9 +42,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TextureManager.class)
 public abstract class TextureManagerMixin {
 
-    @Dynamic("Post reload lambda method")
     @Inject(method = "method_18167", at = @At("HEAD"))
-    private void onReload(ResourceManager manager, Executor exec, Void v, CallbackInfo info) {
-        Colormatic.COLOR_PROPS.reload(manager);
+    private void onReload(ResourceManager resourceManager, Executor executor, CompletableFuture completableFuture, Void void_, CallbackInfo ci) {
+        Colormatic.COLOR_PROPS.reload(resourceManager);
     }
 }

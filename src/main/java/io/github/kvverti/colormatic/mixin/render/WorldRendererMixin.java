@@ -37,7 +37,7 @@ public abstract class WorldRendererMixin {
      * When clear void is enabled, prevent the void from rendering.
      */
     @ModifyConstant(
-        method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V",
+        method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V",
         constant = @Constant(doubleValue = 0.0, ordinal = 0),
         slice = @Slice(
             from = @At(

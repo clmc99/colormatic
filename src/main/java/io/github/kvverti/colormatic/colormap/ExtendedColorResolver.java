@@ -21,13 +21,13 @@
  */
 package io.github.kvverti.colormatic.colormap;
 
+import net.minecraft.world.biome.ColorResolver;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.level.ColorResolver;
 
 public final class ExtendedColorResolver implements ColorResolver {
 

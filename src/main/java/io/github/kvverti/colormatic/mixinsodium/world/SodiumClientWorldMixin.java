@@ -22,10 +22,18 @@
 package io.github.kvverti.colormatic.mixinsodium.world;
 
 import me.jellysquid.mods.sodium.client.world.BiomeSeedProvider;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.profiler.Profiler;
+import net.minecraft.world.MutableWorldProperties;
+import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
+
+import java.util.function.Supplier;
 
 /**
  * Sodium expects {@link BiomeSeedProvider} to be implemented on the target class, but the mixin that
@@ -34,8 +42,9 @@ import net.minecraft.world.World;
 @Mixin(value = ClientWorld.class)
 public abstract class SodiumClientWorldMixin extends World implements BiomeSeedProvider {
 
-    private SodiumClientWorldMixin() {
-        super(null, null, null, null, false, false, 0L, 0);
+
+    protected SodiumClientWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
+        super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess, maxChainedNeighborUpdates);
     }
 
     @Override
