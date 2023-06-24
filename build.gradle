@@ -86,3 +86,7 @@ publishing {
 }
 
 // select the repositories you want to publish
+repositories {
+    // uncomment to publish to the local maven
+    // mavenLocal()
+}
