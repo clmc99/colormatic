@@ -82,3 +82,7 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
         }
+    }
+}
+
+// select the repositories you want to publish
