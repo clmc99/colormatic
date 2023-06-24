@@ -70,7 +70,7 @@ java {
 	withSourcesJar()
 }
 
-jar {
+jar }
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
