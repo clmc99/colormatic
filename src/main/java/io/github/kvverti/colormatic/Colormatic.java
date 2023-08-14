@@ -32,10 +32,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.entry.RegistryEntry;
+
+
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -50,40 +55,40 @@ public class Colormatic implements ClientModInitializer {
     public static final Identifier OVERWORLD_ID = new Identifier("minecraft:overworld");
 
     public static final BiomeColormapResource WATER_COLORS =
-        new BiomeColormapResource(new Identifier(MODID, "colormap/water"));
+            new BiomeColormapResource(new Identifier(MODID, "colormap/water"));
     public static final BiomeColormapResource UNDERWATER_COLORS =
-        new BiomeColormapResource(new Identifier(MODID, "colormap/underwater"));
+            new BiomeColormapResource(new Identifier(MODID, "colormap/underwater"));
     public static final BiomeColormapResource UNDERLAVA_COLORS =
-        new BiomeColormapResource(new Identifier(MODID, "colormap/underlava"));
+            new BiomeColormapResource(new Identifier(MODID, "colormap/underlava"));
     public static final BiomeColormapResource SKY_COLORS =
-        new BiomeColormapResource(new Identifier(MODID, "colormap/sky0"));
+            new BiomeColormapResource(new Identifier(MODID, "colormap/sky0"));
     public static final BiomeColormapResource FOG_COLORS =
-        new BiomeColormapResource(new Identifier(MODID, "colormap/fog0"));
+            new BiomeColormapResource(new Identifier(MODID, "colormap/fog0"));
     public static final BiomeColormapResource BIRCH_COLORS =
-        new BiomeColormapResource(new Identifier(MODID, "colormap/birch"));
+            new BiomeColormapResource(new Identifier(MODID, "colormap/birch"));
     public static final BiomeColormapResource SPRUCE_COLORS =
-        new BiomeColormapResource(new Identifier(MODID, "colormap/pine"));
+            new BiomeColormapResource(new Identifier(MODID, "colormap/pine"));
     public static final LinearColormapResource PUMPKIN_STEM_COLORS =
-        new LinearColormapResource(new Identifier(MODID, "colormap/pumpkinstem.png"));
+            new LinearColormapResource(new Identifier(MODID, "colormap/pumpkinstem.png"));
     public static final LinearColormapResource MELON_STEM_COLORS =
-        new LinearColormapResource(new Identifier(MODID, "colormap/melonstem.png"));
+            new LinearColormapResource(new Identifier(MODID, "colormap/melonstem.png"));
     public static final LinearColormapResource REDSTONE_COLORS =
-        new LinearColormapResource(new Identifier(MODID, "colormap/redstone.png"));
+            new LinearColormapResource(new Identifier(MODID, "colormap/redstone.png"));
     public static final LinearColormapResource MYCELIUM_PARTICLE_COLORS =
-        new LinearColormapResource(new Identifier(MODID, "colormap/myceliumparticle.png"));
+            new LinearColormapResource(new Identifier(MODID, "colormap/myceliumparticle.png"));
     public static final LinearColormapResource LAVA_DROP_COLORS =
-        new LinearColormapResource(new Identifier(MODID, "colormap/lavadrop.png"));
+            new LinearColormapResource(new Identifier(MODID, "colormap/lavadrop.png"));
     public static final LinearColormapResource DURABILITY_COLORS =
-        new LinearColormapResource(new Identifier(MODID, "colormap/durability.png"));
+            new LinearColormapResource(new Identifier(MODID, "colormap/durability.png"));
     public static final LinearColormapResource EXPERIENCE_ORB_COLORS =
-        new LinearColormapResource(new Identifier(MODID, "colormap/xporb.png"));
+            new LinearColormapResource(new Identifier(MODID, "colormap/xporb.png"));
     public static final CustomBiomeColormapsResource CUSTOM_BLOCK_COLORS = new CustomBiomeColormapsResource();
     public static final GlobalLightmapResource LIGHTMAP_PROPS =
-        new GlobalLightmapResource(new Identifier(MODID, "lightmap.json"));
+            new GlobalLightmapResource(new Identifier(MODID, "lightmap.json"));
     public static final LightmapsResource LIGHTMAPS =
-        new LightmapsResource(new Identifier(MODID, "lightmap"));
+             new LightmapsResource(new Identifier(MODID, "lightmap"));
     public static final GlobalColorResource COLOR_PROPS =
-        new GlobalColorResource(new Identifier(MODID, "color"));
+            new GlobalColorResource(new Identifier(MODID, "color"));
 
     private static final ColormaticConfig config = new ColormaticConfig();
 
