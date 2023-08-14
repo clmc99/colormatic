@@ -42,7 +42,8 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.resource.Resource;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
@@ -278,12 +279,12 @@ public class ColormapProperties {
     @Override
     public String toString() {
         return String.format("ColormapProperties { format=%s, blocks=%s, source=%s, color=%x, yVariance=%x, yOffset=%x }",
-            format,
-            blocks,
-            source,
-            color == null ? 0 : color.rgb(),
-            yVariance,
-            yOffset);
+                format,
+                blocks,
+                source,
+                color == null ? 0 : color.rgb(),
+                yVariance,
+                yOffset);
     }
 
     public enum Format implements StringIdentifiable {
