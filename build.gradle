@@ -9,15 +9,23 @@ repositories {
     maven { url = 'https://api.modrinth.com/maven' }
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
 version = "${project.mod_version}+mc.${project.minecraft_version}"
 group = project.maven_group
 
 loom {
-}
+	splitEnvironmentSourceSets()
+
+	mods {
+		"colormatic" {
+			// we're a client-only mod
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
 
 dependencies {
     //to change the versions see the gradle.properties file
@@ -56,11 +64,8 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
+	it.options.release = 17
+	it.options.encoding = "UTF-8"
 }
 
 java {
@@ -68,6 +73,10 @@ java {
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
+
+sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+
 }
 
 jar {
