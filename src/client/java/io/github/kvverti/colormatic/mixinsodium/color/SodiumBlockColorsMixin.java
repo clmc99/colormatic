@@ -22,8 +22,7 @@
 package io.github.kvverti.colormatic.mixinsodium.color;
 
 import io.github.kvverti.colormatic.colormap.BiomeColormaps;
-import me.jellysquid.mods.sodium.client.model.quad.blender.ColorSampler;
-import me.jellysquid.mods.sodium.client.world.biome.BlockColorsExtended;
+import me.jellysquid.mods.sodium.client.model.color.interop.BlockColorsExtended;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Intrinsic;
