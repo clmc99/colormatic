@@ -23,7 +23,6 @@ package io.github.kvverti.colormatic.mixin.text;
 
 import io.github.kvverti.colormatic.Colormatic;
 
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(InGameHud.class)
-public abstract class InGameHudMixin extends DrawableHelper {
+public abstract class InGameHudMixin {
 
     @ModifyConstant(method = "renderExperienceBar", constant = @Constant(intValue = 8453920))
     private int getXpTextColor(int original) {
