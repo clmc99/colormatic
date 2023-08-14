@@ -32,7 +32,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.registry.Registry;
-import net.minecraft.world.dimension.DimensionType;
 
 /**
  * These must be kept in sync with the mixins for provided colors and vanilla defaults.
