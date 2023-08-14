@@ -84,18 +84,3 @@ jar {
         rename { "${it}_${project.archivesBaseName}"}
     }
 }
-
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-}
-
-// select the repositories you want to publish
-repositories {
-    // uncomment to publish to the local maven
-    // mavenLocal()
-}
